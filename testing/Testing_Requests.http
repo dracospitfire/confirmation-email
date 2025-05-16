@@ -1,0 +1,7 @@
+@orderId = 1
+
+@BE_URL = http://localhost:2020/api
+
+### CREATE Email Confirmation ##
+POST {{BE_URL}}/notify/{{orderId}} HTTP/1.1
+content-type: application/json
