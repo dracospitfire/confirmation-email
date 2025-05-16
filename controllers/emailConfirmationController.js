@@ -9,6 +9,11 @@ const createEmailConfirmation = async (req, res) => {
   try {
     const orderId = req.params.orderId;
 
+    // Validate missing or non-numeric orderId,
+    if (!orderId || isNaN(Number(orderId))) {
+      return res.status(400).json({ error: "invalid request" });
+    }
+
     // Hardcoded retrieved order details 
     const order = {
       id: orderId,
@@ -71,7 +76,12 @@ const createPromotionalAnnouncement = async (req, res) => {
   try {
     const memberId = req.params.memberId;
 
-    // Hardcoded retrieved order details 
+    // Validate missing or non-numeric memberId,
+    if (!memberId || isNaN(Number(memberId))) {
+      return res.status(400).json({ error: "invalid request" });
+    }
+
+    // Hardcoded retrieved customer details 
     const customer = {
       id: memberId,
       customerName: "Austin Flores",
