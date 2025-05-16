@@ -1,7 +1,12 @@
 @orderId = 1
+@memberId = 32
 
 @BE_URL = http://localhost:2020/api
 
 ### CREATE Email Confirmation ##
-POST {{BE_URL}}/notify/{{orderId}} HTTP/1.1
+POST {{BE_URL}}/notify/orders/{{{{orderId}}}} HTTP/1.1
+content-type: application/json
+
+### CREATE Email Promotional Announcement ##
+POST {{BE_URL}}/notify/members/{{memberId}} HTTP/1.1
 content-type: application/json
