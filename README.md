@@ -12,15 +12,12 @@ Hosted on Render at:
 
 This microservice receives HTTP POST requests at `/api/notify` containing an order ID, then sends a confirmation email to the customer confirming their coffee purchase. It is stateless and designed for quick synchronous processing.
 
-## 🔧 Features
+## Features
 
-- Accepts POST requests with JSON payload containing `orderId`.
-- Sends a hardcoded (mock) confirmation email for demonstration purposes.
+- Accepts POST requests with JSON payload containing `orders/orderId` and `/members/memberId`.
+- Sends a hardcoded confirmation email for demonstration purposes.
 - CORS enabled for public requests.
 - Logs incoming requests with timestamps, origins, and IP addresses.
 - Easy to extend with real email provider credentials.
 - Returns JSON `{ "status": "sent" }` on success.
-
-## API Usage
-
-### Endpoint
+- Data valiation returning `{ error: "invalid request" }` missing or non-numeric Ids.
