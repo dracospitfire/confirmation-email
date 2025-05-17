@@ -12,7 +12,7 @@ Hosted with Render at:
 
 ## Overview
 
-This microservice receives HTTP POST requests at `/api/notify` containing an order ID or memberId, then sends a confirmation email to the customer confirming their coffee purchase or a promotional promotional announcement email. It is stateless and designed for quick synchronous processing.
+This microservice receives HTTP POST requests at `/api/notify` containing an order ID or Member ID, then sends a confirmation email to the customer confirming their coffee purchase or a promotional promotional announcement email. It is stateless and designed for quick synchronous processing.
 
 ## Features
 
@@ -22,7 +22,7 @@ This microservice receives HTTP POST requests at `/api/notify` containing an ord
 - Logs incoming requests with timestamps, origins, and IP addresses.
 - Easy to extend with real email provider credentials.
 - Returns JSON `{ "status": "sent" }` on success.
-- Data validation returning `{ error: "invalid request" }` missing or non-numeric Ids.
+- Data validation returning `{ error: "invalid request" }` missing or non-numeric IDs.
 
 ## API Overview
 
@@ -30,16 +30,16 @@ This service listens for POST requests and sends hardcoded email responses for t
 
 ### 🔔 Endpoints
 
-| Endpoint                             | Description                                 |
-| ------------------------------------ | ------------------------------------------- |
-| `POST /api/notify/orders/:orderId`   | Sends a **confirmation email** for an order |
-| `POST /api/notify/members/:memberId` | Sends a **promotional email** to a member   |
+| Endpoint                               | Description                                 |
+| -------------------------------------- | ------------------------------------------- |
+| `POST` "/api/notify/orders/:orderId"   | Sends a **confirmation email** for an order |
+| `POST` "/api/notify/members/:memberId" | Sends a **promotional email** to a member   |
 
 ---
 
 ## How to **Request** Data from Microservice A
 
-Your teammate must send an HTTP `POST` request to one of the service's endpoints, passing a valid numeric ID as a **URL parameter**.
+User must send an HTTP `POST` request to one of the service's endpoints, passing a valid numeric ID as a **URL parameter**. I have provided different ways to test it. Through a static HTML page and through a raw http file.
 
 ### Example: Sending Order Confirmation
 
@@ -112,7 +112,7 @@ The microservice responds synchronously with a JSON payload in the body of the r
 
 - Both email previews working via Ethereal
 - All required endpoints and validation implemented
-- Two types of testing provided: Browser testing and raw http testing
+- Two types of testing provided: HTML testing and raw http testing
 
 ### If Teammate Can’t Access It
 
