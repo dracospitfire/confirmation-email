@@ -77,6 +77,15 @@ Response:
 
 The microservice responds synchronously with a JSON payload in the body of the response. Clients should inspect the status and optionally the preview field, which provides a link to view the generated email via Ethereal Email.
 
+General Response:
+
+```json
+{
+  "status": "-------------------- Sent Successfully",
+  "preview": "https://ethereal.email/message/EMAIL_PREVIEW_LINK"
+}
+```
+
 ## Input Validation
 
 - `orderId` and `memberId` **must be numeric**.
