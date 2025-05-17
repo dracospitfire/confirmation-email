@@ -12,7 +12,7 @@ Hosted with Render at:
 
 ## Overview
 
-This microservice receives HTTP POST requests at `/api/notify` containing an order ID or Member ID, then sends a confirmation email to the customer confirming their coffee purchase or a promotional promotional announcement email. It is stateless and designed for quick synchronous processing.
+This microservice receives HTTP POST requests at `/api/notify` containing an order ID or Member ID, then sends a confirmation email to the customer confirming their coffee purchase or a promotional announcement email. It is stateless and designed for quick synchronous processing.
 
 ## Features
 
@@ -28,7 +28,7 @@ This microservice receives HTTP POST requests at `/api/notify` containing an ord
 
 This service listens for POST requests and sends hardcoded email responses for testing/demo purposes.
 
-### 🔔 Endpoints
+### Endpoints
 
 | Endpoint                               | Description                                 |
 | -------------------------------------- | ------------------------------------------- |
@@ -101,38 +101,5 @@ The microservice responds synchronously with a JSON payload in the body of the r
 ## UML Sequence Diagram
 
 ![UML Sequence Diagram](<UML sequence diagram.png>)
-
----
-
-## Mitigation Plan
-
-**Teammate:** Calvin Trombley
-
-### Microservice Status: **Completed**
-
-- Both email previews working via Ethereal
-- All required endpoints and validation implemented
-- Two types of testing provided: HTML testing and raw http testing
-
-### If Teammate Can’t Access It
-
-- They can notify me at any time before **Monday, May 19st**
-- I’ll be available to help on MS Teams during the weekend between **9am–9pm PST**
-- If needed, I can provide a fallback local version of the service or troubleshoot Render deployment.
-
-### Optional Repo Access, if teammate prefers to run locally
-
-```bash
-git clone https://github.com/dracospitfire/confirmation-email.git
-cd calvins-coffee-roast-microservice
-npm install
-npm start
-```
-
-### Final Notes
-
-- This service sends **mock emails** for demo purposes using `nodemailer.createTestAccount()` via Ethereal.
-- For production, we could swap the transporter config to use a real SMTP provider like Mailgun, Gmail, or SendGrid.
-- The microservice does **not** persist orders, order and member data is hardcoded and can't be provided by the caller.
 
 ---
