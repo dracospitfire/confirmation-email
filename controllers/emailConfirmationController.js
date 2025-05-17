@@ -8,6 +8,7 @@ const nodemailer = require("nodemailer");
 const createEmailConfirmation = async (req, res) => {
   try {
     const orderId = req.params.orderId;
+    console.log(orderId)
 
     // Validate missing or non-numeric orderId,
     if (!orderId || isNaN(Number(orderId))) {

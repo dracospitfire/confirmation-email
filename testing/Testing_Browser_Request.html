@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POST Testing</title>
+  <style>
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      gap: 10px;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px; width: 26px;
+      left: 4px; bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #21f35d;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 30px;">
+    <div class="toggle-container">
+      <span>Production</span>
+      <label class="switch">
+        <input type="checkbox" id="envToggle" />
+        <span class="slider"></span>
+      </label>
+      <span>Localhost</span>
+    </div>
+    <!-- Order Form -->
+    <form id="orderForm" method="POST"
+      style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+      <label for="orderId">Order ID:</label>
+      <input type="number" id="orderId" name="orderId" placeholder="Order ID" min="1" step="1" required>
+      <button type="submit">Submit</button>
+    </form>
+
+    <!-- Member Form -->
+    <form id="memberForm" method="POST"
+      style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+      <label for="memberId">Member ID:</label>
+      <input type="number" id="memberId" name="memberId" placeholder="Member ID" min="1" step="1" required>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  <script>
+    const toggle = document.getElementById('envToggle');
+
+    function getBaseUrl() {
+      return toggle.checked
+        ? 'http://localhost:2020/api/notify'                        // Localhost URL when toggled ON
+        : 'https://calvins-coffee-roast.onrender.com/api/notify';  // Production URL when toggled OFF
+    }
+    const orderForm = document.getElementById('orderForm');
+    orderForm.addEventListener('submit', function (e) {
+      const orderId = document.getElementById('orderId').value;
+      orderForm.action = `${getBaseUrl()}/orders/${orderId}`;
+    });
+
+    const memberForm = document.getElementById('memberForm');
+    memberForm.addEventListener('submit', function (e) {
+      const memberId = document.getElementById('memberId').value;
+      memberForm.action = `${getBaseUrl()}/members/${memberId}`;
+    });
+  </script>
+</body>
+</html>
