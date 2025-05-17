@@ -85,8 +85,8 @@
 
     function getBaseUrl() {
       return toggle.checked
-        ? 'http://localhost:2020/api/notify'                        // Localhost URL when toggled ON
-        : 'https://calvins-coffee-roast.onrender.com/api/notify';  // Production URL when toggled OFF
+        ? 'http://localhost:2020/api/notify'                        // Localhost: URL when toggled ON
+        : 'https://calvins-coffee-roast.onrender.com/api/notify';   // Production URL when toggled OFF
     }
     const orderForm = document.getElementById('orderForm');
     orderForm.addEventListener('submit', function (e) {
