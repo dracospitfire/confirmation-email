@@ -110,5 +110,3 @@ General Response:
 ## UML Sequence Diagram
 
 ![UML Sequence Diagram](<UML sequence diagram.png>)
-
----
