@@ -116,7 +116,7 @@ The microservice responds synchronously with a JSON payload in the body of the r
 
 ### If Teammate Can’t Access It
 
-- They can notify me on any time before **Monday, May 19st**
+- They can notify me at any time before **Monday, May 19st**
 - I’ll be available to help on MS Teams during the weekend between **9am–9pm PST**
 - If needed, I can provide a fallback local version of the service or troubleshoot Render deployment.
 
@@ -129,10 +129,10 @@ npm install
 npm start
 ```
 
-### Assumptions & Notes
+### Final Notes
 
 - This service sends **mock emails** for demo purposes using `nodemailer.createTestAccount()` via Ethereal.
-- In production, swap the transporter config to use a real SMTP provider like Mailgun, Gmail, or SendGrid.
-- The microservice does **not** persist orders — order and member data is hardcoded or must be provided by the caller.
+- For production, we could swap the transporter config to use a real SMTP provider like Mailgun, Gmail, or SendGrid.
+- The microservice does **not** persist orders, order and member data is hardcoded and can't be provided by the caller.
 
 ---
