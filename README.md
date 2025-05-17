@@ -1,7 +1,6 @@
 # Calvin's Coffee Roast - Email Notification Microservice
 
-A simple microservice to process coffee order notifications and send confirmation emails and promotional announcements.  
-Built with Express.js and Nodemailer, designed to be called by the main ordering system via HTTP POST.
+A simple microservice to process and send coffee order confirmation emails and promotional announcements. Built with Express.js and Nodemailer, designed to be called by the main ordering system via HTTP POST.
 
 ⚠️ Note: This service is hosted on a free Render instance, which may enter a sleep state after a few minutes of inactivity. If the service is idle, users may experience a short delay while it spins back up. When ready, a request to the base URL will return: "Calvin's Microservice is Running"
 
