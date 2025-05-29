@@ -3,50 +3,32 @@ require("dotenv").config();
 // Util to deep-compare two objects
 const lodash = require("lodash");
 const nodemailer = require("nodemailer");
-// Simplified HTTP requests to other microservices
-const axios      = require("axios");
-
-// Allow URLs and port to configure to different environments
-const ORDERS_URL    = process.env.ORDERS_URL || "http://127.0.0.1:48050";
-const MEMBERS_URL   = process.env.MEMBERS_URL || "http://127.0.0.1:48049";
-const PORT          = process.env.PORT || 3000;
 
 // Returns status of new confirmation email
 const createEmailConfirmation = async (req, res) => {
   try {
-    const orderId   = Number(req.params.orderId);
-    const memberId  = Number(req.body.memberId);
+    const orderId   = req.params.orderId;
     console.log(orderId)
 
     // Validate missing or non-numeric orderId,
-    if (!orderId || isNaN(orderId)) {
+    if (!orderId || isNaN(Number(orderId))) {
       return res.status(400).json({ error: "invalid orderId" });
     }
 
-    // Fetch full order details from Orders microservice
-    let response;
-      try {
-          response = await axios.get(
-              `${ORDERS_URL}/orders/${orderId}/details`
-          );
-      } catch(err) {
-          console.error("failed to fetch order details:", err.message);
-          return res.status(502).json({ error: "Order data unavailable" });
-      }
+    const { order, customer } = req.body;
+    if (!order || !customer) {
+        return res.status(400).json({error: "missing order or customer payload"});
+    }
 
-      // Deconstruct data for use in the email template
-      const {
-          order:        { order_id },
-          customer:     { name: customerName, email: customerEmail },
-          items                                                         // coffee items ordered
-      } = response.data;
-      
-      // Calculate total cost of coffee order
-      let total = 0;
-      for (let item of items) {
-          total += item.quantity * item.unitPrice;
-      }
-      const totalStr = total.toFixed(2);
+    const { order_id, items } = order;
+    const { name: customerName, email: customerEmail } = customer
+
+    // Calculate total cost of coffee order
+    let total = 0;
+    for (let item of items) {
+        total += item.quantity * item.unitPrice;
+    }
+    const totalStr = total.toFixed(2);
 
 
 
@@ -108,16 +90,12 @@ const createPromotionalAnnouncement = async (req, res) => {
       return res.status(400).json({ error: "invalid request" });
     }
 
-    // Fetch member profile from Members microservice
-    let customer;
-    try {
-        const resp = await axios.get(`${MEMBERS_URL}/members/${memberId}`);
-        customer = resp.data;
-        } catch (err) {
-            console.error("failed to fetch order details:", err.message);
-            return res.status(502).json({ error: "Order data unavailable" });
-        }
+   const { customer } = req.body;
+   if (!customer || !customer.name || !customer.email) {
+       return res.status(400).json({ error: "missing customer payload" });
+   }
 
+   const { name, email } = customer;
 
     // Automatically create test account on Ethereal
     const testAccount = await nodemailer.createTestAccount();
@@ -134,9 +112,9 @@ const createPromotionalAnnouncement = async (req, res) => {
     // Email content (plain text)
     const mailOptions = {
       from: `"Calvin's Coffee Roast Team" <orders@roastandbrew.com>`,
-      to: customer.email,
-      subject: `Wake Up, ${customer.name}, to Something Bold..... Limited-Time Coffee Deals!!!!`,
-      html: ` <p>Hi <strong>${customer.name}</strong>,</p>
+      to: email,
+      subject: `Wake Up, ${name}, to Something Bold..... Limited-Time Coffee Deals!!!!`,
+      html: ` <p>Hi <strong>${name}</strong>,</p>
               <p>We’re brewing up something special just for YOU.</p>
               <p>As our favorite coffee lovers, we have an exclusive deal.</p>
               <p>For this week only, enjoy:<br></p>
