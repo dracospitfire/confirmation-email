@@ -3,27 +3,52 @@ require("dotenv").config();
 // Util to deep-compare two objects
 const lodash = require("lodash");
 const nodemailer = require("nodemailer");
+// Simplified HTTP requests to other microservices
+const axios      = require("axios");
+
+// Allow URLs and port to configure to different environments
+const ORDERS_URL    = process.env.ORDERS_URL || "http://127.0.0.1:48050";
+const MEMBERS_URL   = process.env.MEMBERS_URL || "http://127.0.0.1:48049";
+const PORT          = process.env.PORT || 3000;
 
 // Returns status of new confirmation email
 const createEmailConfirmation = async (req, res) => {
   try {
-    const orderId = req.params.orderId;
+    const orderId   = Number(req.params.orderId);
+    const memberId  = Number(req.body.memberId);
     console.log(orderId)
 
     // Validate missing or non-numeric orderId,
-    if (!orderId || isNaN(Number(orderId))) {
-      return res.status(400).json({ error: "invalid request" });
+    if (!orderId || isNaN(orderId)) {
+      return res.status(400).json({ error: "invalid orderId" });
     }
 
-    // Hardcoded retrieved order details 
-    const order = {
-      id: orderId,
-      customerName: "Austin Flores",
-      email: "austin3flores@dracospitfire.com",
-      items: ["Columbia Dark Roast -------------- x2", "Ethiopia Light Roast ---------------- x1"],
-      shippingAddress: "42 Wallaby Way, Sydney, USA",
-      total: 88.69,
-    };
+    // Fetch full order details from Orders microservice
+    let response;
+      try {
+          response = await axios.get(
+              `${ORDERS_URL}/orders/${orderId}/details`
+          );
+      } catch(err) {
+          console.error("failed to fetch order details:", err.message);
+          return res.status(502).json({ error: "Order data unavailable" });
+      }
+
+      // Deconstruct data for use in the email template
+      const {
+          order:        { order_id },
+          customer:     { name: customerName, email: customerEmail },
+          items                                                         // coffee items ordered
+      } = response.data;
+      
+      // Calculate total cost of coffee order
+      let total = 0;
+      for (let item of items) {
+          total += item.quantity * item.unitPrice;
+      }
+      const totalStr = total.toFixed(2);
+
+
 
     // Automatically create test account on Ethereal
     const testAccount = await nodemailer.createTestAccount();
@@ -38,21 +63,22 @@ const createEmailConfirmation = async (req, res) => {
     });
 
     // Email content (plain text)
+    // For each item, format "name x quantity", then join all items into a single string
     const mailOptions = {
       from: `"Calvin's Coffee Roast Team" <orders@roastandbrew.com>`,
-      to: order.email,
-      subject: `Order Confirmation - #${order.id}`,
+      to: customerEmail,
+      subject: `Order Confirmation - #${order_id}`,
       text: `
-      Hi ${order.customerName},
+      Hi ${customerName},
 
           Thank you for your order!
 
-          Order Number: ${order.id}
+          Order Number: ${order_id}
 
           Roasted Coffee:
-          -- ${order.items.join("\n-- ")}
+          -- ${items.map(i => `${i.name} x ${i.quantity}`).join("\n-- ")}
           
-          Total: $${order.total}
+          Total: $${totalStr}
 
           You'll get another email when it’s on its way.
 
@@ -82,12 +108,16 @@ const createPromotionalAnnouncement = async (req, res) => {
       return res.status(400).json({ error: "invalid request" });
     }
 
-    // Hardcoded retrieved customer details 
-    const customer = {
-      id: memberId,
-      customerName: "Austin Flores",
-      email: "austin3flores@dracospitfire.com",
-    };
+    // Fetch member profile from Members microservice
+    let customer;
+    try {
+        const resp = await axios.get(`${MEMBERS_URL}/members/${memberId}`);
+        customer = resp.data;
+        } catch (err) {
+            console.error("failed to fetch order details:", err.message);
+            return res.status(502).json({ error: "Order data unavailable" });
+        }
+
 
     // Automatically create test account on Ethereal
     const testAccount = await nodemailer.createTestAccount();
@@ -105,8 +135,8 @@ const createPromotionalAnnouncement = async (req, res) => {
     const mailOptions = {
       from: `"Calvin's Coffee Roast Team" <orders@roastandbrew.com>`,
       to: customer.email,
-      subject: `Wake Up, ${customer.customerName}, to Something Bold..... Limited-Time Coffee Deals!!!!`,
-      html: ` <p>Hi <strong>${customer.customerName}</strong>,</p>
+      subject: `Wake Up, ${customer.name}, to Something Bold..... Limited-Time Coffee Deals!!!!`,
+      html: ` <p>Hi <strong>${customer.name}</strong>,</p>
               <p>We’re brewing up something special just for YOU.</p>
               <p>As our favorite coffee lovers, we have an exclusive deal.</p>
               <p>For this week only, enjoy:<br></p>
